@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Başkent Freze – Personel Takip & Mesai</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:#f2f5f8;
+    color:#17232d;
+    font-family:Arial,Helvetica,sans-serif;
+}
+.app{
+    max-width:700px;
+    margin:auto;
+    min-height:100vh;
+}
+header{
+    background:#0b2638;
+    color:white;
+    padding:20px 15px;
+    text-align:center;
+}
+header h1{
+    margin:0;
+    font-size:22px;
+}
+header p{
+    margin:7px 0 0;
+    font-size:13px;
+    opacity:.85;
+}
+.menu{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    padding:15px;
+}
+button{
+    border:0;
+    border-radius:10px;
+    padding:15px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+.menu button{
+    background:white;
+    color:#0b2638;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.menu button:hover{
+    background:#eaf1f6;
+}
+.panel{
+    display:none;
+    background:white;
+    margin:0 15px 15px;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.panel.active{
+    display:block;
+}
+h2{
+    margin-top:0;
+    color:#0b2638;
+    font-size:19px;
+}
+label{
+    display:block;
+    margin:11px 0 5px;
+    font-size:13px;
+    font-weight:bold;
+}
+input,select,textarea{
+    width:100%;
+    padding:11px;
+    border:1px solid #c8d1d8;
+    border-radius:8px;
+    font-size:15px;
+}
+textarea{
+    min-height:80px;
+    resize:vertical;
+}
+.save{
+    width:100%;
+    margin-top:18px;
+    background:#0b2638;
+    color:white;
+}
+.back{
+    background:#e7edf1;
+    color:#17232d;
+    margin-bottom:10px;
+}
+.person{
+    border:1px solid #d7dfe5;
+    border-radius:10px;
+    padding:13px;
+    margin-bottom:10px;
+    cursor:pointer;
+}
+.person strong{
+    display:block;
+    font-size:16px;
+    margin-bottom:5px;
+}
+.person small{
+    color:#66737d;
+}
+.badge{
+    display:inline-block;
+    margin-top:7px;
+    padding:4px 8px;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:bold;
+    background:#dff3e5;
+    color:#21743b;
+}
+.info{
+    background:#f3f7fa;
+    padding:12px;
+    border-radius:9px;
+    margin-bottom:10px;
+}
+.info b{
+    display:block;
+    color:#0b2638;
+    margin-bottom:3px;
+}
+.empty{
+    text-align:center;
+    color:#71808b;
+    padding:20px 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+    <h1>BAŞKENT FREZE</h1>
+    <p>Personel Takip & Mesai</p>
+</header>
+
+<div class="menu">
+    <button onclick="showPanel('personeller')">👥 Personeller</button>
+    <button onclick="showPanel('yeni')">➕ Yeni Personel</button>
+    <button onclick="alert('Günlük takip bölümü sonraki aşamada aktif edilecek.')">📅 Günlük Takip</button>
+    <button onclick="alert('Bordro bölümü sonraki aşamada aktif edilecek.')">💰 Bordro</button>
+    <button onclick="alert('Raporlar sonraki aşamada aktif edilecek.')">📊 Raporlar</button>
+    <button onclick="alert('Ayarlar sonraki aşamada aktif edilecek.')">⚙️ Ayarlar</button>
+</div>
+
+<!-- PERSONEL LİSTESİ -->
+<div id="personeller" class="panel">
+    <button class="back" onclick="showHome()">← Ana Menü</button>
+    <h2>Personel Listesi</h2>
+    <div id="personelListesi"></div>
+</div>
+
+<!-- YENİ PERSONEL -->
+<div id="yeni" class="panel">
+    <button class="back" onclick="showHome()">← Ana Menü</button>
+    <h2>Yeni Personel Kaydı</h2>
+
+    <label>Ad Soyad</label>
+    <input id="adSoyad">
+
+    <label>Görevi</label>
+    <input id="gorevi">
+
+    <label>Departmanı</label>
+    <input id="departmani">
+
+    <label>İşe giriş tarihi</label>
+    <input type="date" id="iseGiris">
+
+    <label>Personel numarası</label>
+    <input id="personelNo">
+
+    <label>Telefon</label>
+    <input id="telefon">
+
+    <label>Adres</label>
+    <input id="adres">
+
+    <label>Acil durumda aranacak kişi</label>
+    <input id="acilKisi">
+
+    <label>Acil telefon</label>
+    <input id="acilTelefon">
+
+    <label>M1 (TL)</label>
+    <input type="number" id="m1">
+
+    <label>M2 (TL)</label>
+    <input type="number" id="m2">
+
+    <label>Özel ek ödeme (TL)</label>
+    <input type="number" id="ekOdeme" value="0">
+
+    <label>Yıllık izin hakkı (gün)</label>
+    <input type="number" id="izinHakki">
+
+    <label>Devreden izin (gün)</label>
+    <input type="number" id="devredenIzin" value="0">
+
+    <label>Normal giriş saati</label>
+    <input type="time" id="girisSaati">
+
+    <label>Normal çıkış saati</label>
+    <input type="time" id="cikisSaati">
+
+    <label>Cumartesi çalışma durumu</label>
+    <select id="cumartesi">
+        <option value="TAM">Tam</option>
+        <option value="YOK">Yok</option>
+        <option value="KISMİ">Kısmi</option>
+    </select>
+
+    <label>Personel özel notu</label>
+    <input id="ozelNot">
+
+    <label>Aktif / Pasif</label>
+    <select id="durum">
+        <option value="AKTİF">Aktif</option>
+        <option value="PASİF">Pasif</option>
+    </select>
+
+    <label>İşten ayrılış tarihi</label>
+    <input type="date" id="ayrilis">
+
+    <label>Genel açıklama</label>
+    <textarea id="aciklama"></textarea>
+
+    <button class="save" onclick="personelKaydet()">💾 PERSONELİ KAYDET</button>
+</div>
+
+<!-- PERSONEL DOSYASI -->
+<div id="dosya" class="panel">
+    <button class="back" onclick="showPanel('personeller')">← Personel Listesine Dön</button>
+    <h2>Personel Dosyası</h2>
+    <div id="personelDosyasi"></div>
+</div>
+
+</div>
+
+<script>
+
+let personeller = JSON.parse(localStorage.getItem("baskentPersoneller") || "[]");
+
+function showHome(){
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+}
+
+function showPanel(id){
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    if(id === "personeller"){
+        personelListele();
+    }
+}
+
+function personelKaydet(){
+
+    const personel = {
+        id: Date.now(),
+        adSoyad: document.getElementById("adSoyad").value.trim(),
+        gorevi: document.getElementById("gorevi").value.trim(),
+        departmani: document.getElementById("departmani").value.trim(),
+        iseGiris: document.getElementById("iseGiris").value,
+        personelNo: document.getElementById("personelNo").value.trim(),
+        telefon: document.getElementById("telefon").value.trim(),
+        adres: document.getElementById("adres").value.trim(),
+        acilKisi: document.getElementById("acilKisi").value.trim(),
+        acilTelefon: document.getElementById("acilTelefon").value.trim(),
+        m1: Number(document.getElementById("m1").value) || 0,
+        m2: Number(document.getElementById("m2").value) || 0,
+        ekOdeme: Number(document.getElementById("ekOdeme").value) || 0,
+        izinHakki: Number(document.getElementById("izinHakki").value) || 0,
+        devredenIzin: Number(document.getElementById("devredenIzin").value) || 0,
+        girisSaati: document.getElementById("girisSaati").value,
+        cikisSaati: document.getElementById("cikisSaati").value,
+        cumartesi: document.getElementById("cumartesi").value,
+        ozelNot: document.getElementById("ozelNot").value.trim(),
+        durum: document.getElementById("durum").value,
+        ayrilis: document.getElementById("ayrilis").value,
+        aciklama: document.getElementById("aciklama").value.trim(),
+
+        hareketler:{
+            izinler:[],
+            avanslar:[],
+            mesailer:[],
+            devamsizliklar:[],
+            kesintiler:[],
+            bordrolar:[]
+        }
+    };
+
+    if(!personel.adSoyad){
+        alert("Ad Soyad bilgisi zorunludur.");
+        return;
+    }
+
+    personeller.push(personel);
+
+    localStorage.setItem(
+        "baskentPersoneller",
+        JSON.stringify(personeller)
+    );
+
+    alert("Personel başarıyla kaydedildi.");
+
+    document.querySelectorAll("#yeni input, #yeni textarea").forEach(el => {
+        if(el.type !== "number") el.value = "";
+    });
+
+    showPanel("personeller");
+}
+
+function personelListele(){
+
+    const alan = document.getElementById("personelListesi");
+
+    if(personeller.length === 0){
+        alan.innerHTML = '<div class="empty">Henüz kayıtlı personel yok.</div>';
+        return;
+    }
+
+    alan.innerHTML = "";
+
+    personeller.forEach(personel => {
+
+        const div = document.createElement("div");
+        div.className = "person";
+
+        div.innerHTML = `
+            <strong>${personel.adSoyad}</strong>
+            <small>
+                ${personel.gorevi || "-"} 
+                ${personel.departmani ? " • " + personel.departmani : ""}
+            </small>
+            <br>
+            <small>Personel No: ${personel.personelNo || "-"}</small>
+            <br>
+            <span class="badge">${personel.durum}</span>
+        `;
+
+        div.onclick = () => personelDosyasiAc(personel.id);
+
+        alan.appendChild(div);
+    });
+}
+
+function personelDosyasiAc(id){
+
+    const personel = personeller.find(p => p.id === id);
+
+    if(!personel) return;
+
+    const alan = document.getElementById("personelDosyasi");
+
+    alan.innerHTML = `
+        <div class="info">
+            <b>${personel.adSoyad}</b>
+            ${personel.gorevi || "-"}<br>
+            ${personel.departmani || "-"}
+        </div>
+
+        <div class="info">
+            <b>Sabit Bilgiler</b>
+            Personel No: ${personel.personelNo || "-"}<br>
+            İşe Giriş: ${personel.iseGiris || "-"}<br>
+            Telefon: ${personel.telefon || "-"}<br>
+            M1: ${personel.m1.toLocaleString("tr-TR")} TL<br>
+            M2: ${personel.m2.toLocaleString("tr-TR")} TL<br>
+            Yıllık İzin Hakkı: ${personel.izinHakki} gün<br>
+            Devreden İzin: ${personel.devredenIzin} gün<br>
+            Çalışma: ${personel.girisSaati || "-"} - ${personel.cikisSaati || "-"}<br>
+            Cumartesi: ${personel.cumartesi}<br>
+            Durum: ${personel.durum}
+        </div>
+
+        <div class="info">
+            <b>Aylık Hareketler</b>
+            İzin: ${personel.hareketler.izinler.length}<br>
+            Avans: ${personel.hareketler.avanslar.length}<br>
+            Mesai: ${personel.hareketler.mesailer.length}<br>
+            Devamsızlık: ${personel.hareketler.devamsizliklar.length}<br>
+            Kesinti: ${personel.hareketler.kesintiler.length}
+        </div>
+
+        <button class="save" onclick="alert('Aylık hareket ekranını bir sonraki aşamada ekleyeceğiz.')">
+            ➕ AYLIK HAREKET EKLE
+        </button>
+    `;
+
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.getElementById("dosya").classList.add("active");
+}
+
+</script>
+
+</body>
+</html>
